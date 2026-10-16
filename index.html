@@ -31,7 +31,15 @@ input:focus,textarea:focus,select:focus{border-color:var(--purple)}.search input
 .section-title{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:34px 0 15px}.section-title h2{margin:0;font-size:25px}.small{font-size:13px;color:var(--muted)}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;padding-bottom:35px}.card,.workspace,.about{background:linear-gradient(145deg,#141e33,#0e1525);border:1px solid var(--line);border-radius:18px;padding:20px}
 .card{display:flex;flex-direction:column;align-items:flex-start;min-height:205px}.card .ico{font-size:29px}.card h3{margin:7px 0 2px;font-size:19px}.card p{margin:0 0 16px;color:var(--muted);font-size:14px;flex:1}.card button{margin-top:auto}
-.workspace{margin-bottom:30px}.workspace h2{margin-top:0}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}label{font-size:14px;color:#dbe3f3}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}.result{margin-top:14px;padding:14px;border:1px solid #344465;border-radius:12px;background:#080e1b;white-space:pre-wrap;overflow-wrap:anywhere;min-height:55px}.hidden{display:none!important}
+.workspace{margin-bottom:30px}.workspace h2{margin-top:0}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}label{font-size:14px;color:#dbe3f3}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}.result{margin-top:14px;padding:16px;border:1px solid #344465;border-radius:16px;background:linear-gradient(145deg,#0b1325,#080e1b);overflow-wrap:anywhere;min-height:55px}
+.result-head{display:flex;align-items:center;gap:10px;padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid #293653}
+.result-mark{display:grid;place-items:center;width:38px;height:38px;flex-shrink:0;border-radius:12px;background:#28204b;border:1px solid #51458d;font-size:19px}
+.result-head strong{display:block;font-size:16px}.result-head small{display:block;color:#9eacc6;font-size:12px}
+.result-content{display:grid;gap:9px}.result-item{display:flex;align-items:flex-start;gap:10px;padding:11px 12px;border:1px solid #273653;background:#111a2c;border-radius:11px;line-height:1.9}
+.result-num{display:grid;place-items:center;min-width:27px;height:27px;border-radius:8px;background:#30265c;color:#d8d0ff;font-size:12px;font-weight:bold}
+.result-text{flex:1;min-width:0;white-space:pre-wrap}.result-paragraph{padding:8px 2px;white-space:pre-wrap;line-height:2}
+.result-note{margin-top:12px;padding:10px 12px;border-radius:10px;background:#102b30;border:1px solid #24505a;color:#b9f4ed;font-size:13px;line-height:1.9}
+.result-empty{color:#9eacc6;display:flex;align-items:center;gap:9px;padding:8px 0}.hidden{display:none!important}
 .about{margin:30px 0;color:var(--muted)}.about h2{color:var(--text);margin-top:0}footer{border-top:1px solid var(--line);padding:24px 0;color:var(--muted);font-size:13px;text-align:center}.notice{font-size:12px;color:#9ba8c1;margin-top:12px}
 @media(max-width:620px){nav{align-items:flex-start;padding:13px 0;flex-direction:column}.links{gap:14px}.hero{padding-top:42px}.search{flex-direction:column}.search .btn{width:100%}.fields{grid-template-columns:1fr}.field.full{grid-column:auto}.section-title{align-items:flex-start;flex-direction:column}}
 </style>
@@ -56,7 +64,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--purple)}.search input
 <h2 id="toolTitle">ابزار</h2><p class="small" id="toolDesc">ورودی را کامل کن و دکمه ساخت را بزن.</p>
 <div id="toolFields" class="fields"></div>
 <div class="actions"><button class="btn" id="runBtn">ساخت نتیجه</button><button class="btn secondary" id="copyBtn">کپی نتیجه</button><button class="btn secondary" id="clearBtn">پاک کردن</button></div>
-<div id="result" class="result">نتیجه اینجا نمایش داده می‌شود.</div>
+<div id="result" class="result"><div class="result-empty">✨ نتیجهٔ ساخته‌شده اینجا نمایش داده می‌شود.</div></div>
 <p class="notice">توجه: این نسخه از الگوها و پردازش داخل مرورگر استفاده می‌کند؛ خروجی‌ها پاسخ یک مدل هوش مصنوعی آنلاین نیستند.</p>
 </section>
 <section class="about" id="about"><h2>درباره KingAI</h2><p>KingAI مجموعه‌ای از ابزارهای ساده فارسی برای کمک به ایده‌پردازی و تولید محتواست. ابزارهای این نسخه داخل مرورگر اجرا می‌شوند و برای استفاده از آن‌ها نیازی به ساخت حساب کاربری نیست. خروجی‌ها پیشنهاد اولیه هستند؛ قبل از انتشار، آن‌ها را بررسی و متناسب با محتوای خودت ویرایش کن.</p></section>
@@ -81,6 +89,49 @@ const scored=sentences.map((s,i)=>({s,i,n:s.split(/\\s+/).length})).sort((a,b)=>
 return `خلاصه پیشنهادی (${words} کلمه در متن اصلی):\\n\\n${scored.map(x=>x.s).join(' ')}\\n\\nتوجه: این خلاصه‌سازی ساده است؛ برای متن‌های مهم، نتیجه را با متن اصلی مقایسه کن.`}},
  gaming:{title:'🎮 اسم گیمینگ',desc:'یک کلمه دلخواه وارد کن یا خالی بگذار تا ترکیب‌های پیشنهادی ببینی.',fields:[['word','کلمه یا لقب دلخواه','مثلاً King یا Shadow','text']],run:v=>{
 const base=(v.word||'').trim();const roots=base?[base]:['Nova','Shadow','Storm','Pixel','Royal','Frost','Blaze','Ghost'];
+const suffix=['X','7','DN','Pro','Zone','Rush','One','YT','Play','Zero'];
+const results=[];for(let i=0;i<12;i++){const a=roots[i%roots.length],b=suffix[(i*3+1)%suffix.length];results.push(`${a}${b}`,`${a}_${suffix[(i+4)%suffix.length]}`)}
+return [...new Set(results)].slice(0,12).join('\\n')}}
+};
+function selectTool(name){activeTool=name;const c=configs[name];$('workspace').classList.remove('hidden');$('toolTitle').textContent=c.title;$('toolDesc').textContent=c.desc;$('toolFields').innerHTML='';
+c.fields.forEach(([id,label,placeholder,type])=>{const d=document.createElement('div');d.className='field'+(type==='textarea'?' full':'');const l=document.createElement('label');l.htmlFor='f_'+id;l.textContent=label;let el;if(type==='textarea'){el=document.createElement('textarea');el.rows=6}else{el=document.createElement('input');el.type='text'}el.id='f_'+id;el.placeholder=placeholder;d.append(l,el);$('toolFields').append(d)});
+$('result').textContent='نتیجه اینجا نمایش داده می‌شود.';$('workspace').scrollIntoView({behavior:'smooth',block:'start'});
+}
+document.querySelectorAll('[data-tool]').forEach(b=>b.addEventListener('click',()=>selectTool(b.dataset.tool)));
+function renderResult(title, raw){
+const box=$('result');box.replaceChildren();
+const head=document.createElement('div');head.className='result-head';
+const mark=document.createElement('div');mark.className='result-mark';mark.textContent='✨';
+const headText=document.createElement('div');const strong=document.createElement('strong');strong.textContent=title;
+const small=document.createElement('small');small.textContent='نتیجه آماده است · می‌تونی کپی کنی';
+headText.append(strong,small);head.append(mark,headText);box.append(head);
+const content=document.createElement('div');content.className='result-content';
+const lines=String(raw||'').split('\\n');
+let note='';
+lines.forEach((line)=>{
+const t=line.trim();if(!t)return;
+if(/^توجه:|^پیشنهاد:/.test(t)){note=t;return;}
+const match=t.match(/^(\\d+)[.٫)\-]\s*(.*)$/);
+if(match){
+const item=document.createElement('div');item.className='result-item';
+const num=document.createElement('span');num.className='result-num';num.textContent=match[1];
+const body=document.createElement('div');body.className='result-text';body.textContent=match[2];
+item.append(num,body);content.append(item);
+}else{
+const para=document.createElement('div');para.className='result-paragraph';para.textContent=t;content.append(para);
+}
+});
+if(!content.childElementCount){const empty=document.createElement('div');empty.className='result-empty';empty.textContent='برای دیدن نتیجه، اطلاعات بالا را کامل کن و دوباره بزن.';content.append(empty);}
+box.append(content);
+if(note){const n=document.createElement('div');n.className='result-note';n.textContent='💡 '+note;box.append(n);}
+}
+$('runBtn').addEventListener('click',()=>{if(!activeTool)return;const c=configs[activeTool],v={};c.fields.forEach(f=>v[f[0]]=$('f_'+f[0]).value);renderResult(c.title,c.run(v))});
+$('copyBtn').addEventListener('click',async()=>{const t=$('result').innerText;try{await navigator.clipboard.writeText(t);$('copyBtn').textContent='کپی شد ✓';setTimeout(()=>$('copyBtn').textContent='کپی نتیجه',1500)}catch(e){const ta=document.createElement('textarea');ta.value=t;document.body.append(ta);ta.select();document.execCommand('copy');ta.remove();$('copyBtn').textContent='کپی شد ✓';setTimeout(()=>$('copyBtn').textContent='کپی نتیجه',1500)}});
+$('clearBtn').addEventListener('click',()=>{$('toolFields').querySelectorAll('input,textarea').forEach(e=>e.value='');$('result').textContent='نتیجه اینجا نمایش داده می‌شود.'});
+function findTool(){const q=$('search').value.trim().toLowerCase();let first=null;document.querySelectorAll('.card').forEach(c=>{const match=!q||c.dataset.name.toLowerCase().includes(q)||c.innerText.toLowerCase().includes(q);c.classList.toggle('hidden',!match);if(match&&!first)first=c});$('tools').scrollIntoView({behavior:'smooth'});if(q&&!first)alert('ابزاری با این عبارت پیدا نشد. عبارت دیگری امتحان کن.')}
+$('searchBtn').addEventListener('click',findTool);$('search').addEventListener('keydown',e=>{if(e.key==='Enter')findTool()});
+</script>
+</body></html>roots=base?[base]:['Nova','Shadow','Storm','Pixel','Royal','Frost','Blaze','Ghost'];
 const suffix=['X','7','DN','Pro','Zone','Rush','One','YT','Play','Zero'];
 const results=[];for(let i=0;i<12;i++){const a=roots[i%roots.length],b=suffix[(i*3+1)%suffix.length];results.push(`${a}${b}`,`${a}_${suffix[(i+4)%suffix.length]}`)}
 return [...new Set(results)].slice(0,12).join('\\n')}}
